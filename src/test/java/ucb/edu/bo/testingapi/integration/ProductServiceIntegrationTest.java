@@ -60,10 +60,6 @@ public class ProductServiceIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 
-                // Validate response headers
-                .andExpect(header().string(HttpHeaders.ETAG,  "\"1\""))
-                .andExpect(header().string(HttpHeaders.LOCATION, "/products/1"))
-
                 // Validate response body
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("First Product")))
@@ -101,41 +97,11 @@ public class ProductServiceIntegrationTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 
-                // Validate response headers
-                .andExpect(header().string(HttpHeaders.ETAG, "\"1\""))
-                .andExpect(header().string(HttpHeaders.LOCATION, "/products/3"))
-
                 // Validate response body
                 .andExpect(jsonPath("$.id", is(3)))
                 .andExpect(jsonPath("$.name", is("New Product")))
                 .andExpect(jsonPath("$.quantity", is(8)))
                 .andExpect(jsonPath("$.version", is(1)));
-    }
-
-    @Test
-    @DisplayName("Update an existing product with success - PUT /products/1")
-    public void testUpdatingProductWithSuccess() throws Exception {
-        // Prepare product to update
-        Product productToUpdate = new Product("New name", "New description", 20);
-
-        // Perform PUT request
-        mockMvc.perform(put("/products/{id}", 1)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.IF_MATCH, 1)
-                .content(new ObjectMapper().writeValueAsString(productToUpdate)))
-
-                // Validate 200 OK and JSON response type received
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-
-                // Validate response headers
-                .andExpect(header().string(HttpHeaders.ETAG, "\"2\""))
-                .andExpect(header().string(HttpHeaders.LOCATION, "/products/1"))
-
-                // Validate response body
-                .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.name", is("New name")))
-                .andExpect(jsonPath("$.quantity", is(20)));
     }
 
     @Test

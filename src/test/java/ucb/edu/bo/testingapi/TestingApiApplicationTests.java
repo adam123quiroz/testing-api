@@ -2,20 +2,14 @@ package ucb.edu.bo.testingapi;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasItems;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
-@AutoConfigureMockMvc
 class TestingApiApplicationTests {
 
     @Test
@@ -47,6 +41,7 @@ class TestingApiApplicationTests {
                 .then()
                 .statusCode(201)
                 .assertThat()
+                .body("id", greaterThan(0))
                 .log().all();
     }
 

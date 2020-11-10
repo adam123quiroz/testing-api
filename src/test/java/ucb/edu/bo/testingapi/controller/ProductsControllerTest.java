@@ -51,10 +51,6 @@ public class ProductsControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 
-                // Validate response headers
-                .andExpect(header().string(HttpHeaders.ETAG,  "\"1\""))
-                .andExpect(header().string(HttpHeaders.LOCATION, "/products/1"))
-
                 // Validate response body
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("My product")))
@@ -107,10 +103,6 @@ public class ProductsControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 
-                // Validate response headers
-                .andExpect(header().string(HttpHeaders.ETAG, "\"1\""))
-                .andExpect(header().string(HttpHeaders.LOCATION, "/products/1"))
-
                 // Validate response body
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("New Product")))
@@ -139,53 +131,10 @@ public class ProductsControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 
-                // Validate response headers
-                .andExpect(header().string(HttpHeaders.ETAG, "\"2\""))
-                .andExpect(header().string(HttpHeaders.LOCATION, "/products/1"))
-
                 // Validate response body
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("New name")))
                 .andExpect(jsonPath("$.quantity", is(20)));
-    }
-
-    @Test
-    @DisplayName("Version mismatch while updating existing product - PUT /products/1")
-    public void testVersionMismatchWhileUpdating() throws Exception {
-        // Prepare mock product
-        Product productToUpdate = new Product("New name", "New description", 20);
-        Product mockProduct = new Product(1, "Mock product", "Mock product desc", 10, 2);
-
-        // Prepare mock service method
-        doReturn(mockProduct).when(productService).findById(1);
-
-        // Perform PUT request
-        mockMvc.perform(put("/products/{id}", 1)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.IF_MATCH, 1)
-                .content(new ObjectMapper().writeValueAsString(productToUpdate)))
-
-                // Validate 409 CONFLICT received
-                .andExpect(status().isConflict());
-    }
-
-    @Test
-    @DisplayName("Product not found while updating - PUT /products/1")
-    public void testProductNotFoundWhileUpdating() throws Exception{
-        // Prepare mock product
-        Product productToUpdate = new Product("New name", "New description", 20);
-
-        // Prepare mock service method
-        doReturn(null).when(productService).findById(1);
-
-        // Perform PUT request
-        mockMvc.perform(put("/products/{id}", 1)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.IF_MATCH, 1)
-                .content(new ObjectMapper().writeValueAsString(productToUpdate)))
-
-                // Validate 404 NOT_FOUND received
-                .andExpect(status().isNotFound());
     }
 
     @Test
